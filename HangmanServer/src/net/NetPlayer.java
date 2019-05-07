@@ -1,45 +1,35 @@
-/*
- * Code used in the "Software Engineering" course.
- *
- * Copyright 2017 by Claudio Cusano (claudio.cusano@unipv.it)
- * Dept of Electrical, Computer and Biomedical Engineering,
- * University of Pavia.
- */
-package console;
+package net;
 
-import hangman.Player;
+import console.LocalPlayer;
 import hangman.Game;
+import hangman.Player;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * Manage a player playing with the terminal.
- * 
- * @author Claudio Cusano <claudio.cusano@unipv.it>
- */
-public class LocalPlayer extends Player {
-    
+public class NetPlayer extends Player {
     BufferedReader console;
+    Socket socket;
+    ServerSocket server;
 
-        
+
     /**
      * Constructor.
      */
-    public LocalPlayer() {
-        console = new BufferedReader(new InputStreamReader(System.in));
+    public NetPlayer() throws Exception{
+
+        console = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
-    
+
     @Override
     public void update(Game game) {
         switch(game.getResult()) {
             case FAILED:
                 printBanner("Hai perso!  La parola da indovinare era '" +
-                            game.getSecretWord() + "'");
+                        game.getSecretWord() + "'");
                 break;
             case SOLVED:
                 printBanner("Hai indovinato!   (" + game.getSecretWord() + ")");
@@ -55,7 +45,7 @@ public class LocalPlayer extends Player {
 
     private String gameRepresentation(Game game) {
         int a = game.countFailedAttempts();
-        
+
         String s = "   ___________\n  /       |   \n  |       ";
         s += (a == 0 ? "\n" : "O\n");
         s += "  |     " + (a == 0 ? "\n" : (a < 5
@@ -66,7 +56,7 @@ public class LocalPlayer extends Player {
         s += "  |\n================\n";
         return s;
     }
-    
+
     private void printBanner(String message) {
         System.out.println("");
         for (int i = 0; i < 80; i++)
@@ -79,7 +69,7 @@ public class LocalPlayer extends Player {
 
     /**
      * Ask the user to guess a letter.
-     * 
+     *
      * @param game
      * @return
      */
@@ -101,3 +91,4 @@ public class LocalPlayer extends Player {
         }
     }
 }
+
